@@ -110,4 +110,4 @@ AS $function$
     timer := clock_timestamp();
   END LOOP;
 END;
-$function$
+$function$;

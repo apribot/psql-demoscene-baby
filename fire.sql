@@ -36,5 +36,4 @@ AS $function$
   EXECUTE 'select pg_sleep(0.1)';
   END LOOP;
 END;
-$function$
-~            
+$function$;        
