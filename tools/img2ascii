@@ -1,0 +1,46 @@
+#!/usr/bin/php
+<?php
+
+$maxBright = (float) 255*3;
+
+ 
+
+//$colors = [' ','░','▒','▓','█'];
+
+$colors = [' ', '.',':','-','=','+','*','#','%','@'];
+
+$fname = $argv[1];
+
+if(!is_file($fname)) {
+	die("ERROR - '${fname}' does not exist.\n");
+}
+
+$image = new Imagick('matt.png');
+
+ 
+
+$w = $image->getImageWidth();
+
+$h = $image->getImageHeight();
+
+ 
+
+for ($y=0; $y < $h; $y++) {
+
+  for ($x=0; $x < $w; $x++) {
+
+    $pixel = $image->getImagePixelColor($x, $y);
+
+    $res = $pixel->getColor();
+
+    $a = ( (float) $res['r'] + (float) $res['g'] + (float) $res['b']) / $maxBright;
+
+    $ptr = ($res['a'] == 0) ? 0 : ($a * (count($colors) - 1));
+
+    echo str_repeat($colors[(int) $ptr], 2);
+
+  }
+
+  echo "\n";
+
+}
