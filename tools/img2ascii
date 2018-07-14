@@ -15,7 +15,7 @@ if(!is_file($fname)) {
 	die("ERROR - '${fname}' does not exist.\n");
 }
 
-$image = new Imagick('matt.png');
+$image = new Imagick($fname);
 
  
 
