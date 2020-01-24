@@ -12,20 +12,19 @@ AS $function$
         _outp text;
       BEGIN
       _map :=
-          array_fill(0, array[14,20])
+          array_fill(0, array[19,40])
             || ARRAY[
-              ARRAY[0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
-                ARRAY[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0],
-                ARRAY[0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,1]
+                ARRAY[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                ARRAY[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
               ]
-            || array_fill(0, array[3, 20]);
+            || array_fill(0, array[19, 40]);
          
-       _tempmap := array_fill(0, array[20, 20]);
+       _tempmap := array_fill(0, array[40, 40]);
      
      _xsize := array_length(_map, 1)-1;
         _ysize := array_length(_map, 1)-1;
      
-     FOR nothing IN 1..99 BY 1 LOOP
+     FOR nothing IN 1..9999 BY 1 LOOP
           _outp := e'\n';
            FOR _iy IN 2.._ysize BY 2 LOOP
              FOR _ix IN 1.._xsize BY 1 LOOP
@@ -57,7 +56,18 @@ AS $function$
                             + coalesce(_map[_iy+1][_ix-1], 0)
                             + coalesce(_map[_iy+1][_ix], 0)
                             + coalesce(_map[_iy+1][_ix+1], 0)
-                            < 2 THEN 0
+                            < 2 THEN 0 -- death by underpopulation
+                            /*WHEN
+                            _map[_iy][_ix] = 1
+                            AND coalesce(_map[_iy-1][_ix-1], 0)
+                            + coalesce(_map[_iy-1][_ix], 0)
+                            + coalesce(_map[_iy-1][_ix+1], 0)
+                            + coalesce(_map[_iy][_ix-1], 0)
+                            + coalesce(_map[_iy][_ix+1], 0)
+                            + coalesce(_map[_iy+1][_ix-1], 0)
+                            + coalesce(_map[_iy+1][_ix], 0)
+                            + coalesce(_map[_iy+1][_ix+1], 0)
+                            BETWEEN 2 AND 3 THEN 1*/
                             WHEN
                             _map[_iy][_ix] = 1
                             AND coalesce(_map[_iy-1][_ix-1], 0)
@@ -68,18 +78,7 @@ AS $function$
                             + coalesce(_map[_iy+1][_ix-1], 0)
                             + coalesce(_map[_iy+1][_ix], 0)
                             + coalesce(_map[_iy+1][_ix+1], 0)
-                            BETWEEN 2 AND 3 THEN 1
-                            WHEN
-                            _map[_iy][_ix] = 1
-                            AND coalesce(_map[_iy-1][_ix-1], 0)
-                            + coalesce(_map[_iy-1][_ix], 0)
-                            + coalesce(_map[_iy-1][_ix+1], 0)
-                            + coalesce(_map[_iy][_ix-1], 0)
-                            + coalesce(_map[_iy][_ix+1], 0)
-                            + coalesce(_map[_iy+1][_ix-1], 0)
-                            + coalesce(_map[_iy+1][_ix], 0)
-                            + coalesce(_map[_iy+1][_ix+1], 0)
-                            > 3 THEN 0
+                            > 4 - ((nothing/29)%2) THEN 0 -- death by overpopulation
                             WHEN
                             _map[_iy][_ix] = 0
                             AND coalesce(_map[_iy-1][_ix-1], 0)
@@ -90,7 +89,7 @@ AS $function$
                             + coalesce(_map[_iy+1][_ix-1], 0)
                             + coalesce(_map[_iy+1][_ix], 0)
                             + coalesce(_map[_iy+1][_ix+1], 0)
-                            = 3 THEN 1
+                            = 3 THEN 1 -- rebirth by neighbors
                             ELSE _map[_iy][_ix]
                           END
                       );
